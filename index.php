@@ -36,6 +36,19 @@
 					var data = new FormData();
 					data.append('lh', files[0]);
 
+					$('#myform').hide();
+					$('#progress-container').show('slow');
+
+					var timer = setInterval(function(){
+						$.ajax({
+							url :		'monitor.php',
+							success :	function (data) {
+								console.log(data);
+								$('#progress').attr('aria-valuenow', data).css('width', data+'%');
+							}
+						});
+					}, 1000);
+
 					var formAction = form.attr('action');
 					$.ajax({
 						url         : 'process.php',
@@ -46,6 +59,7 @@
 						type        : 'POST',
 						success     : function(data, textStatus, jqXHR){
 							console.log(data);
+							clearInterval(timer);
 						}
 					});
 				});
@@ -63,6 +77,11 @@
 				</div>
 			</fieldset>
 		</form>
+		<div id='progress-container' style='display:none'>
+			<div class="progress progress-striped active">
+ 				<div id='progress' class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

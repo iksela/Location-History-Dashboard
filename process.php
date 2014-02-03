@@ -1,7 +1,12 @@
 <?php
 include 'lib.php';
-var_dump($_FILES);
+
 if ($_FILES['lh']['name'] != '') {
+	session_start();
+	$_SESSION['filesize'] = $_FILES['lh']['size'];
+	$_SESSION['ftell'] = 0;
+	session_write_close();
+
 	$handle = fopen($_FILES['lh']['tmp_name'], "r");
 	$started = false;
 	$buffer = '';
@@ -21,14 +26,21 @@ if ($_FILES['lh']['name'] != '') {
 				else {
 					$buffer .= '}';
 					$object = json_decode($buffer);
-					var_dump($object);
+					//var_dump($object);
+					
 					$lhd->add($object);
 					$buffer = '{';
 				}
 			}
 			$lines_processed++;
 
-			if ($lines_processed > 90) exit();
+			if ($lines_processed % 100 == 0) {
+				session_start();
+				$_SESSION['ftell'] = ftell($handle);
+				session_write_close();
+			}
+
+			if ($lines_processed > 90000) exit();
 		}
 	}
 }
