@@ -22,17 +22,44 @@
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$('input[type=file]').bootstrapFileInput();
+
+				var files;
+				$('input[type=file]').on('change', function prepareUpload(event) {
+					files = event.target.files;
+				});
+
+				$('#submit').on('click', function(e){
+					e.stopPropagation();
+					e.preventDefault();
+					var form = $(this);
+					
+					var data = new FormData();
+					data.append('lh', files[0]);
+
+					var formAction = form.attr('action');
+					$.ajax({
+						url         : 'process.php',
+						data        : data,
+						cache       : false,
+						contentType : false,
+						processData : false,
+						type        : 'POST',
+						success     : function(data, textStatus, jqXHR){
+							console.log(data);
+						}
+					});
+				});
 			});
 		</script>
 		<div class="page-header">
 			<h1>LHD <small>a Google Location History Dashboard</small></h1>
 		</div>
-		<form action="process.php" method="POST" enctype="multipart/form-data" class="form-inline" role="form">
+		<form action="process.php" method="POST" enctype="multipart/form-data" class="form-inline" role="form" id='myform'>
 			<fieldset>
 				<legend>File Upload</legend>
 				<div class="form-group">
 					<input type="file" name="lh" class="btn btn-default" title="Choose file">
-					<input type="submit" value="Let's go!" class="btn btn-primary">
+					<input type="button" value="Let's go!" class="btn btn-primary" id='submit'>
 				</div>
 			</fieldset>
 		</form>

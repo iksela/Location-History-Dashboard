@@ -1,6 +1,6 @@
 <?php
 include 'lib.php';
-
+var_dump($_FILES);
 if ($_FILES['lh']['name'] != '') {
 	$handle = fopen($_FILES['lh']['tmp_name'], "r");
 	$started = false;
