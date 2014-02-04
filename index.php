@@ -59,6 +59,12 @@
 						type        : 'POST',
 						success     : function(data, textStatus, jqXHR){
 							console.log(data);
+							$('#debug').append(data);
+							clearInterval(timer);
+						},
+						error		: function(data) {
+							console.log(data);
+							$('#debug').append(data);
 							clearInterval(timer);
 						}
 					});
@@ -82,6 +88,7 @@
  				<div id='progress' class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 			</div>
 		</div>
+		<div id='debug'></div>
 	</div>
 </body>
 </html>

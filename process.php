@@ -20,14 +20,15 @@ if ($_FILES['lh']['name'] != '') {
 				$buffer = '{';
 			}
 			elseif ($started) {
-				if (strpos($line, '}, {') === false) {
+				if (strpos($line, '}, {') != 2) {
 					$buffer .= $line;
 				}
 				else {
 					$buffer .= '}';
 					$object = json_decode($buffer);
 					//var_dump($object);
-					
+					//var_dump(strpos($line, '}, {'));
+					//if (!is_object($object)) var_dump("above");
 					$lhd->add($object);
 					$buffer = '{';
 				}
@@ -35,12 +36,15 @@ if ($_FILES['lh']['name'] != '') {
 			$lines_processed++;
 
 			if ($lines_processed % 100 == 0) {
+				$lhd->commit();
 				session_start();
 				$_SESSION['ftell'] = ftell($handle);
 				session_write_close();
 			}
 
-			if ($lines_processed > 90000) exit();
+			if ($lines_processed > 9000) {
+				exit();
+			}
 		}
 	}
 }
