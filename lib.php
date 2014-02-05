@@ -23,27 +23,20 @@ class LHD {
 			$this->data[] = $object->longitudeE7;
 			$this->data[] = $object->accuracy;
 			$this->data[] = $date->format('Y-m-d H:i:s');
-			// $query = $this->connection->prepare("INSERT INTO lhd VALUES (:ts, :lat, :lng, :acc, :date)");
-			// $r = $query->execute(array(
-			// 	'ts'	=> $object->timestampMs,
-			// 	'lat'	=> $object->latitudeE7,
-			// 	'lng'	=> $object->longitudeE7,
-			// 	'acc'	=> $object->accuracy,
-			// 	'date'	=> $date->format('Y-m-d H:i:s')
-			// ));
 		}
 	}
 
 	public function commit() {
-		$sql  = "INSERT INTO lhd ('timestampMs', 'latitude', 'longitude', 'accuracy', 'pointdate') VALUES "; 
+		$sql  = "INSERT INTO lhd (timestampMs, latitude, longitude, accuracy, pointdate) VALUES "; 
 		$sql .= implode(', ', $this->placeholders);
 		$query = $this->connection->prepare($sql);
-		try {
-			$query->execute($this->data);
-		} catch (Exception $e) {
-			var_dump("exception");
-			var_dump($e);
+		$b = $query->execute($this->data);
+		if (!$b) {
+			var_dump($query->errorInfo());
+			var_dump($sql);
+			var_dump($this->data);
 		}
+
 		$this->data = array();
 		$this->placeholders = array();
 	}
