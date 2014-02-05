@@ -20,6 +20,7 @@ if ($_FILES['lh']['name'] != '') {
 				$buffer = '{';
 			}
 			elseif ($started) {
+				//var_dump(strpos($line, '}, {'));
 				if (strpos($line, '}, {') != 2) {
 					$buffer .= $line;
 				}
@@ -30,16 +31,19 @@ if ($_FILES['lh']['name'] != '') {
 					//var_dump(strpos($line, '}, {'));
 					//if (!is_object($object)) var_dump("above");
 					$lhd->add($object);
+					$items++;
 					$buffer = '{';
 				}
 			}
 			$lines_processed++;
 
 			if ($lines_processed % 100 == 0) {
+				var_dump("commit: ".$items);
 				$lhd->commit();
-				session_start();
+				@session_start();
 				$_SESSION['ftell'] = ftell($handle);
 				session_write_close();
+				$items = 0;
 			}
 
 			if ($lines_processed > 9000) {

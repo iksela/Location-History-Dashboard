@@ -38,7 +38,12 @@ class LHD {
 		$sql  = "INSERT INTO lhd ('timestampMs', 'latitude', 'longitude', 'accuracy', 'pointdate') VALUES "; 
 		$sql .= implode(', ', $this->placeholders);
 		$query = $this->connection->prepare($sql);
-		$query->execute($this->data);
+		try {
+			$query->execute($this->data);
+		} catch (Exception $e) {
+			var_dump("exception");
+			var_dump($e);
+		}
 		$this->data = array();
 		$this->placeholders = array();
 	}
