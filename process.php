@@ -1,6 +1,8 @@
 <?php
 include 'lib.php';
 
+$start = microtime(true);
+
 if ($_FILES['lh']['name'] != '') {
 	session_start();
 	$_SESSION['filesize'] = $_FILES['lh']['size'];
@@ -34,28 +36,32 @@ if ($_FILES['lh']['name'] != '') {
 						var_dump($buffer);
 					}
 					else {
-						$lhd->add($object);
+						$items += $lhd->add($object);
 					}
-					$items++;
 					$buffer = '{';
 				}
 			}
 			$lines_processed++;
 
-			if ($lines_processed % 100 == 0) {
-				//var_dump("commit: ".$items);
+			if ($lines_processed % 10000 == 0) {
+				@session_start();
+				$_SESSION['ftell'] = ftell($handle);
+				$_SESSION['debug'] = array(
+					'commits'	=> $items,
+					'lines'		=> $lines_processed
+				);
+				session_write_close();
 				if ($items > 0) {
 					$lhd->commit();
 				}
 				$items = 0;
-				@session_start();
-				$_SESSION['ftell'] = ftell($handle);
-				session_write_close();
 			}
 
-			if ($lines_processed > 25000) {
-				exit();
+			if ($lines_processed > 100000) {
+				break;
 			}
 		}
+		$end = microtime(true) - $start;
+		var_dump($end);
 	}
 }

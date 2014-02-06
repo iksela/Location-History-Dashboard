@@ -23,7 +23,9 @@ class LHD {
 			$this->data[] = $object->longitudeE7;
 			$this->data[] = $object->accuracy;
 			$this->data[] = $date->format('Y-m-d H:i:s');
+			return 1;
 		}
+		return 0;
 	}
 
 	public function commit() {
@@ -32,6 +34,7 @@ class LHD {
 		$query = $this->connection->prepare($sql);
 		$b = $query->execute($this->data);
 		if (!$b) {
+			var_dump($_SESSION['debug']);
 			var_dump($query->errorInfo());
 			var_dump($sql);
 			var_dump($this->data);
