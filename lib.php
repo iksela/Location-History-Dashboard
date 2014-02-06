@@ -14,23 +14,20 @@ class LHD {
 	}
 
 	public function add($object) {
-		if (!$this->exists($object)) {
-			$date = new DateTime();
-			$date->setTimestamp($object->timestampMs/1000);
-			$this->placeholders[] = "(?,?,?,?,?)";
-			$this->data[] = $object->timestampMs;
-			$this->data[] = $object->latitudeE7;
-			$this->data[] = $object->longitudeE7;
-			$this->data[] = $object->accuracy;
-			$this->data[] = $date->format('Y-m-d H:i:s');
-			return 1;
-		}
-		return 0;
+		$date = new DateTime();
+		$date->setTimestamp($object->timestampMs/1000);
+		$this->placeholders[] = "(?,?,?,?,?)";
+		$this->data[] = $object->timestampMs;
+		$this->data[] = $object->latitudeE7;
+		$this->data[] = $object->longitudeE7;
+		$this->data[] = $object->accuracy;
+		$this->data[] = $date->format('Y-m-d H:i:s');
 	}
 
 	public function commit() {
 		$sql  = "INSERT INTO lhd (timestampMs, latitude, longitude, accuracy, pointdate) VALUES "; 
 		$sql .= implode(', ', $this->placeholders);
+		$sql .= " ON DUPLICATE KEY UPDATE timestampMs=VALUES(timestampMs), latitude=VALUES(latitude), longitude=VALUES(longitude), accuracy=VALUES(accuracy), pointdate=VALUES(pointdate)";
 		$query = $this->connection->prepare($sql);
 		$b = $query->execute($this->data);
 		if (!$b) {
@@ -42,12 +39,5 @@ class LHD {
 
 		$this->data = array();
 		$this->placeholders = array();
-	}
-
-	public function exists($object) {
-		$query = $this->connection->prepare("SELECT timestampMs FROM lhd WHERE timestampMs = :ts");
-		$query->execute(array('ts' => $object->timestampMs));
-
-		return $query->fetch(PDO::FETCH_ASSOC);
 	}
 }

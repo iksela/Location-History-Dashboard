@@ -36,7 +36,8 @@ if ($_FILES['lh']['name'] != '') {
 						var_dump($buffer);
 					}
 					else {
-						$items += $lhd->add($object);
+						$lhd->add($object);
+						$items++;
 					}
 					$buffer = '{';
 				}
@@ -57,9 +58,9 @@ if ($_FILES['lh']['name'] != '') {
 				$items = 0;
 			}
 
-			if ($lines_processed > 100000) {
+			/*if ($lines_processed > 100000) {
 				break;
-			}
+			}*/
 		}
 		$end = microtime(true) - $start;
 		var_dump($end);
