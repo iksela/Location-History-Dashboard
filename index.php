@@ -43,7 +43,7 @@ session_unset();
 					$('#myform').hide();
 					$('#progress-container').show('slow');
 
-					var timer = setInterval(function(){
+					var monitor = function() {
 						$.ajax({
 							url :		'monitor.php',
 							success :	function (data) {
@@ -51,7 +51,9 @@ session_unset();
 								$('#progress').attr('aria-valuenow', data).css('width', data+'%');
 							}
 						});
-					}, 1000);
+					};
+
+					var timer = setInterval(monitor, 1000);
 
 					var formAction = form.attr('action');
 					$.ajax({
@@ -65,6 +67,7 @@ session_unset();
 							console.log(data);
 							$('#debug').append(data);
 							clearInterval(timer);
+							monitor();
 						},
 						error		: function(data) {
 							console.log(data);

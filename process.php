@@ -1,6 +1,8 @@
 <?php
 include 'lib.php';
 
+ini_set('max_execution_time', 5*60);
+
 $start = microtime(true);
 
 if ($_FILES['lh']['name'] != '') {
@@ -57,11 +59,19 @@ if ($_FILES['lh']['name'] != '') {
 				}
 				$items = 0;
 			}
-
-			/*if ($lines_processed > 100000) {
-				break;
-			}*/
 		}
+		// last commit
+		@session_start();
+		$_SESSION['ftell'] = ftell($handle);
+		$_SESSION['debug'] = array(
+			'commits'	=> $items,
+			'lines'		=> $lines_processed
+		);
+		session_write_close();
+		if ($items > 0) {
+			$lhd->commit();
+		}
+
 		$end = microtime(true) - $start;
 		var_dump($end);
 	}

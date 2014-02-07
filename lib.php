@@ -20,7 +20,7 @@ class LHD {
 		$this->data[] = $object->timestampMs;
 		$this->data[] = $object->latitudeE7;
 		$this->data[] = $object->longitudeE7;
-		$this->data[] = $object->accuracy;
+		$this->data[] = (property_exists($object, 'accuracy')) ? $object->accuracy : 0;
 		$this->data[] = $date->format('Y-m-d H:i:s');
 	}
 
