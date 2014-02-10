@@ -1,10 +1,12 @@
 <?php
-class LHD {
+class DB {
 	private $connection;
 
 	private $data;
 
 	private $placeholders;
+
+	const E7 = 10000000;
 
 	public function __construct() {
 		$this->data = array();
@@ -39,5 +41,24 @@ class LHD {
 
 		$this->data = array();
 		$this->placeholders = array();
+	}
+
+	public function getNbDataPoints() {
+		$q = $this->connection->prepare("SELECT COUNT(*) FROM lhd");
+		$r = $q->execute();
+		return $q->fetch()[0];
+	}
+
+	public function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
+		$earth_radius = 6371;
+
+		$dLat = deg2rad($latitude2 - $latitude1);
+		$dLon = deg2rad($longitude2 - $longitude1);
+
+		$a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);
+		$c = 2 * asin(sqrt($a));
+		$d = $earth_radius * $c;
+
+		return $d;
 	}
 }

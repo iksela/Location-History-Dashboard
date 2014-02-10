@@ -1,5 +1,5 @@
 <?php
-include 'lib.php';
+include 'DB.php';
 
 ini_set('max_execution_time', 5*60);
 
@@ -16,7 +16,7 @@ if ($_FILES['lh']['name'] != '') {
 	$buffer = '';
 	$items = 0;
 	$lines_processed = 0;
-	$lhd = new LHD();
+	$db = new DB();
 	if ($handle) {
 		while (($line = fgets($handle)) !== false) {
 			if (strpos($line, 'locations') !== false && !$started) {
@@ -24,21 +24,18 @@ if ($_FILES['lh']['name'] != '') {
 				$buffer = '{';
 			}
 			elseif ($started) {
-				//var_dump(strpos($line, '}, {'));
 				if (strpos($line, '}, {') != 2) {
 					$buffer .= $line;
 				}
 				else {
 					$buffer .= '}';
 					$object = json_decode($buffer);
-					//var_dump($object);
-					//var_dump(strpos($line, '}, {'));
-					//if (!is_object($object)) var_dump("above");
+
 					if (!is_object($object)) {
 						var_dump($buffer);
 					}
 					else {
-						$lhd->add($object);
+						$db->add($object);
 						$items++;
 					}
 					$buffer = '{';
@@ -55,7 +52,7 @@ if ($_FILES['lh']['name'] != '') {
 				);
 				session_write_close();
 				if ($items > 0) {
-					$lhd->commit();
+					$db->commit();
 				}
 				$items = 0;
 			}
@@ -69,7 +66,7 @@ if ($_FILES['lh']['name'] != '') {
 		);
 		session_write_close();
 		if ($items > 0) {
-			$lhd->commit();
+			$db->commit();
 		}
 
 		$end = microtime(true) - $start;
