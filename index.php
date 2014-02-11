@@ -4,10 +4,7 @@ session_unset();
 include 'layout.php';
 include 'DB.php';
 
-$layout = new Layout(array(
-	'index.php'		=> 'Home',
-	'upload.php'	=> 'File upload'
-));
+$layout = new Layout();
 $layout->header();
 $layout->nav('index.php');
 $db = new DB();

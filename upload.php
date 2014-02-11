@@ -3,10 +3,7 @@ session_start();
 session_unset();
 include 'layout.php';
 
-$layout = new Layout(array(
-	'index.php'		=> 'Home',
-	'upload.php'	=> 'File upload'
-));
+$layout = new Layout();
 $layout->header();
 $layout->nav('upload.php');
 ?>

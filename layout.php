@@ -2,7 +2,11 @@
 class Layout {
 	private $menu;
 
-	public function __construct($menu) {
+	public function __construct($menu=array()) {
+		if (count($menu) == 0) {
+			$cfg = parse_ini_file('config.ini', true);
+			$menu = $cfg['menu'];
+		}
 		$this->menu = $menu;
 	}
 
