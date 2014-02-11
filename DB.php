@@ -49,6 +49,13 @@ class DB {
 		return $q->fetch()[0];
 	}
 
+	public function getAllDataPoints() {
+		$this->connection->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+		$q = $this->connection->prepare("SELECT * FROM lhd_datapoints ORDER BY pointdate ASC");
+		$q->execute();
+		return $q;
+	}
+
 	public function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 		$earth_radius = 6371;
 
