@@ -7,8 +7,8 @@ $start = microtime(true);
 
 if ($_FILES['lh']['name'] != '') {
 	session_start();
-	$_SESSION['filesize'] = $_FILES['lh']['size'];
-	$_SESSION['ftell'] = 0;
+	$_SESSION['total'] = $_FILES['lh']['size'];
+	$_SESSION['current'] = 0;
 	session_write_close();
 
 	$handle = fopen($_FILES['lh']['tmp_name'], "r");
@@ -45,7 +45,7 @@ if ($_FILES['lh']['name'] != '') {
 
 			if ($lines_processed % 10000 == 0) {
 				@session_start();
-				$_SESSION['ftell'] = ftell($handle);
+				$_SESSION['current'] = ftell($handle);
 				$_SESSION['debug'] = array(
 					'commits'	=> $items,
 					'lines'		=> $lines_processed
@@ -59,7 +59,7 @@ if ($_FILES['lh']['name'] != '') {
 		}
 		// last commit
 		@session_start();
-		$_SESSION['ftell'] = ftell($handle);
+		$_SESSION['current'] = ftell($handle);
 		$_SESSION['debug'] = array(
 			'commits'	=> $items,
 			'lines'		=> $lines_processed
