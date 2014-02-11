@@ -27,7 +27,7 @@ class DB {
 	}
 
 	public function commit() {
-		$sql  = "INSERT INTO lhd (timestampMs, latitude, longitude, accuracy, pointdate) VALUES "; 
+		$sql  = "INSERT INTO lhd_datapoints (timestampMs, latitude, longitude, accuracy, pointdate) VALUES "; 
 		$sql .= implode(', ', $this->placeholders);
 		$sql .= " ON DUPLICATE KEY UPDATE timestampMs=VALUES(timestampMs), latitude=VALUES(latitude), longitude=VALUES(longitude), accuracy=VALUES(accuracy), pointdate=VALUES(pointdate)";
 		$query = $this->connection->prepare($sql);
@@ -44,7 +44,7 @@ class DB {
 	}
 
 	public function getNbDataPoints() {
-		$q = $this->connection->prepare("SELECT COUNT(*) FROM lhd");
+		$q = $this->connection->prepare("SELECT COUNT(*) FROM lhd_datapoints");
 		$r = $q->execute();
 		return $q->fetch()[0];
 	}
