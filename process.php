@@ -1,15 +1,13 @@
 <?php
 include 'DB.php';
+include 'LHD.php';
 
 ini_set('max_execution_time', 5*60);
 
 $start = microtime(true);
 
 if ($_FILES['lh']['name'] != '') {
-	session_start();
-	$_SESSION['total'] = $_FILES['lh']['size'];
-	$_SESSION['current'] = 0;
-	session_write_close();
+	LHD::initMonitor($_FILES['lh']['size']);
 
 	$handle = fopen($_FILES['lh']['tmp_name'], "r");
 	$started = false;
@@ -44,13 +42,7 @@ if ($_FILES['lh']['name'] != '') {
 			$lines_processed++;
 
 			if ($lines_processed % 10000 == 0) {
-				@session_start();
-				$_SESSION['current'] = ftell($handle);
-				$_SESSION['debug'] = array(
-					'commits'	=> $items,
-					'lines'		=> $lines_processed
-				);
-				session_write_close();
+				LHD::updateMonitor(ftell($handle));
 				if ($items > 0) {
 					$db->commit();
 				}
@@ -58,13 +50,7 @@ if ($_FILES['lh']['name'] != '') {
 			}
 		}
 		// last commit
-		@session_start();
-		$_SESSION['current'] = ftell($handle);
-		$_SESSION['debug'] = array(
-			'commits'	=> $items,
-			'lines'		=> $lines_processed
-		);
-		session_write_close();
+		LHD::updateMonitor(ftell($handle));
 		if ($items > 0) {
 			$db->commit();
 		}
