@@ -7,6 +7,9 @@ ini_set('max_execution_time', 5*60);
 $start = microtime(true);
 
 $db = new DB();
+
+LHD::initMonitor($db->getNbDataPoints());
+
 $q = $db->getAllDataPoints();
 
 $i			= 0;
@@ -21,7 +24,7 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 
 	// save
 	if ($date != $lastdate && $summary->nbPoints > 0) {
-		var_dump("date changed, got at least one point - should save");
+		//var_dump("date changed, got at least one point - should save");
 		$summary->day = $lastdate;
 		$summary->avgSpeed = (count($summary->avgSpeed) > 0) ? array_sum($summary->avgSpeed) / count($summary->avgSpeed) : 0;
 		var_dump($summary);
@@ -52,7 +55,11 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 
 	$i++;
 
-	if ($i > 500) break;
+	if ($i%1000 == 0) {
+		LHD::updateMonitor($i);
+	}
+
+	if ($i > 50000) break;
 }
 
 $end = microtime(true) - $start;
