@@ -35,7 +35,6 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 		$stateChanged = $summary->addDistance($last, $r);
 
 		if ($stateChanged) {
-			var_dump('state changed');
 			$summary->day = $lastdate;
 			$summary->to = $last->timestampMs;
 			$nowMoving = !$summary->moving;
@@ -63,7 +62,7 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 		LHD::updateMonitor($i);
 	}
 
-	if ($i > 50) break;
+	if ($i > 50000) break;
 }
 
 $end = microtime(true) - $start;

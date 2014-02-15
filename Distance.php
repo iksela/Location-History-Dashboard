@@ -32,22 +32,13 @@ class Distance {
 class Summary {
 	const MovingThreshold	= 0.5; // km
 	const TimeThreshold		= 300; // seconds
+
 	public $day			= null;
 	public $moving		= false;
 	public $from		= null;
 	public $to			= null;
-	public $distance;
-	public $avgSpeed;
-	public $maxSpeed;
-	public $nbPoints;
-
-	public function __construct() {
-		$this->day			= null;
-		$this->distance		= 0;
-		$this->avgSpeed		= array();
-		$this->maxSpeed		= 0;
-		$this->nbPoints		= 0;
-	}
+	public $distance	= 0;
+	public $nbPoints	= 0;
 
 	public function setDistance($last, $current) {
 		$this->distance = Distance::getDistance($last, $current);
