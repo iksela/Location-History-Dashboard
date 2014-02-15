@@ -52,7 +52,7 @@ if ($_FILES['lh']['name'] != '') {
 		// last commit
 		LHD::updateMonitor(ftell($handle));
 		if ($items > 0) {
-			$db->commit();
+			$db->commitDataPoints();
 		}
 
 		$end = microtime(true) - $start;
