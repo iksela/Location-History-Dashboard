@@ -24,53 +24,35 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 	
 	$date = explode(' ', $r->pointdate)[0];
 
-	// save
-	if ($date != $lastdate && $summary->nbPoints > 0) {
-		//var_dump("date changed, got at least one point - should save");
-		$summary->day = $lastdate;
-		$summary->avgSpeed = (count($summary->avgSpeed) > 0) ? array_sum($summary->avgSpeed) / count($summary->avgSpeed) : 0;
-		var_dump($summary);
-		//TODO: save summary entry
-		// Changed days, this checks if we moved between days
-		$summary = new Summary();
-		$summary->day		= $date;
-		$summary->from		= $last->timestampMs;
-		$summary->to		= $r->timestampMs;
-		$summary->setDistance($last, $r);
-
-		var_dump($summary);
-		//TODO: save summary entry
-		$summary = new Summary();
-		$summary->day		= $date;
-		$summary->from		= $r->timestampMs;
+	// if doesn't have a from, use current ts
+	if (!$summary->from) {
+		$summary->from = $r->timestampMs;
 	}
-	elseif ($date == $lastdate) {
-		// distance
+
+	// we need a reference point
+	if ($last) {
+		// try adding the distance and retrieve a changed state
 		$stateChanged = $summary->addDistance($last, $r);
-		$interval = intval(($r->timestampMs - $last->timestampMs) / 1000);
 
 		if ($stateChanged) {
-			$summary->to = $r->timestampMs;
-			var_dump("event changed!");
+			var_dump('state changed');
+			$summary->day = $lastdate;
+			$summary->to = $last->timestampMs;
+			$nowMoving = !$summary->moving;
 			var_dump($summary);
+			// TODO: save summary here
+
+			// Begin new event
 			$summary = new Summary();
-			$summary->day		= $date;
-			$summary->from		= $r->timestampMs;
-			$summary->setDistance($last, $r);
+			$summary->from = $last->timestampMs;
+			$summary->moving = $nowMoving;
+			// if switched from static to moving, set initial distance
+			if ($nowMoving == true) {
+				$summary->setDistance($last, $r);
+			}
 		}
-		
-/*		// interval
-		$interval = intval(($r->timestampMs - $last->timestampMs) / 1000);
-		
-		// speed, only relevant if > 1kmh
-		$speed = ($interval) ? $distance / ($interval / 3600) : 0;
-		if ($speed > 1) $summary->avgSpeed[] = $speed;
-		if ($speed > $summary->maxSpeed) $summary->maxSpeed = $speed;*/
 	}
-	else {
-		$summary->from	= $r->timestampMs;
-		$summary->to	= $r->timestampMs;
-	}
+
 	$lastdate = $date;
 	$last = $r;
 	$summary->nbPoints++;
@@ -81,7 +63,7 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 		LHD::updateMonitor($i);
 	}
 
-	if ($i > 100) break;
+	if ($i > 50) break;
 }
 
 $end = microtime(true) - $start;

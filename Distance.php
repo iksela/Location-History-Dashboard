@@ -72,9 +72,9 @@ class Summary {
 	}
 
 	public function isMoving($distance, $last, $current) {
-		// if interval > threshold, do not trigger event
-		if (Distance::getTimeInterval($last, $current) > self::TimeThreshold) {
-			return $this->moving;
+		// if interval < threshold, do not trigger event when moving
+		if (Distance::getTimeInterval($last, $current) < self::TimeThreshold && $this->moving) {
+			return true;
 		}
 
 		// corrected distance for moving event detection
