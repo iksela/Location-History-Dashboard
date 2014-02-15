@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.11.1deb2
+-- version 4.0.9
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Feb 11, 2014 at 08:12 PM
--- Server version: 5.5.35
--- PHP Version: 5.4.4-14+deb7u7
+-- Client: 127.0.0.1
+-- Généré le: Sam 15 Février 2014 à 18:23
+-- Version du serveur: 5.6.14
+-- Version de PHP: 5.5.6
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,13 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `test`
+-- Base de données: `test`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `lhd_datapoints`
+-- Structure de la table `lhd_datapoints`
 --
 
 CREATE TABLE IF NOT EXISTS `lhd_datapoints` (
@@ -38,14 +38,15 @@ CREATE TABLE IF NOT EXISTS `lhd_datapoints` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `lhd_summary`
+-- Structure de la table `lhd_summary`
 --
 
 CREATE TABLE IF NOT EXISTS `lhd_summary` (
   `day` date NOT NULL,
   `distance` int(11) NOT NULL,
-  `avg_speed` int(11) NOT NULL,
-  `max_speed` int(11) NOT NULL,
+  `moving` tinyint(1) NOT NULL,
+  `dp_from` bigint(20) NOT NULL,
+  `dp_to` bigint(20) NOT NULL,
   PRIMARY KEY (`day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

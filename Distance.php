@@ -2,6 +2,8 @@
 class Distance {
 	const E7 = 10000000;
 
+	const MOON = 384400;
+
 	public static function getDistance($last, $current) {
 		return self::getDistanceE7($last->latitude, $last->longitude, $current->latitude, $current->longitude);
 	}

@@ -13,7 +13,7 @@ class DB {
 		$this->connection = new PDO($cfg['connection']['dns'], $cfg['connection']['user'], $cfg['connection']['pass']);
 	}
 
-	public function add($object) {
+	public function addDataPoint($object) {
 		$date = new DateTime();
 		$date->setTimestamp($object->timestampMs/1000);
 		$this->placeholders[] = "(?,?,?,?,?)";
@@ -24,14 +24,38 @@ class DB {
 		$this->data[] = $date->format('Y-m-d H:i:s');
 	}
 
-	public function commit() {
+	public function commitDataPoints() {
 		$sql  = "INSERT INTO lhd_datapoints (timestampMs, latitude, longitude, accuracy, pointdate) VALUES "; 
 		$sql .= implode(', ', $this->placeholders);
 		$sql .= " ON DUPLICATE KEY UPDATE timestampMs=VALUES(timestampMs), latitude=VALUES(latitude), longitude=VALUES(longitude), accuracy=VALUES(accuracy), pointdate=VALUES(pointdate)";
 		$query = $this->connection->prepare($sql);
 		$b = $query->execute($this->data);
 		if (!$b) {
-			var_dump($_SESSION['debug']);
+			var_dump($query->errorInfo());
+			var_dump($sql);
+			var_dump($this->data);
+		}
+
+		$this->data = array();
+		$this->placeholders = array();
+	}
+
+	public function addSummary($object) {
+		$this->placeholders[] = "(?,?,?,?,?)";
+		$this->data[] = $object->day;
+		$this->data[] = $object->distance*1000;
+		$this->data[] = $object->moving;
+		$this->data[] = $object->from;
+		$this->data[] = $object->to;
+	}
+
+	public function commitSummaries() {
+		$sql  = "INSERT INTO lhd_summary (day, distance, moving, dp_from, dp_to) VALUES ";
+		$sql .= implode(', ', $this->placeholders);
+		$sql .= " ON DUPLICATE KEY UPDATE day=VALUES(day), distance=VALUES(distance), moving=VALUES(moving), dp_from=VALUES(dp_from), dp_to=VALUES(dp_to)";
+		$query = $this->connection->prepare($sql);
+		$b = $query->execute($this->data);
+		if (!$b) {
 			var_dump($query->errorInfo());
 			var_dump($sql);
 			var_dump($this->data);
@@ -52,5 +76,17 @@ class DB {
 		$q = $this->connection->prepare("SELECT * FROM lhd_datapoints ORDER BY pointdate ASC");
 		$q->execute();
 		return $q;
+	}
+
+	public function getNbSummaries() {
+		$q = $this->connection->prepare("SELECT COUNT(*) FROM lhd_summary");
+		$r = $q->execute();
+		return $q->fetch()[0];
+	}
+
+	public function getSumDistance() {
+		$q = $this->connection->prepare("SELECT SUM(distance)/1000 FROM lhd_summary");
+		$r = $q->execute();
+		return $q->fetch()[0];
 	}
 }

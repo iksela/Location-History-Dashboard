@@ -31,8 +31,6 @@ class Layout {
 
 	<link rel="stylesheet" href="css.css">
 
-	<script src="handlebars-v1.3.0.js"></script>
-
 	<script src="//gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js"></script>
 </head>
 EOT;

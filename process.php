@@ -33,7 +33,7 @@ if ($_FILES['lh']['name'] != '') {
 						var_dump($buffer);
 					}
 					else {
-						$db->add($object);
+						$db->addDataPoint($object);
 						$items++;
 					}
 					$buffer = '{';
@@ -44,7 +44,7 @@ if ($_FILES['lh']['name'] != '') {
 			if ($lines_processed % 10000 == 0) {
 				LHD::updateMonitor(ftell($handle));
 				if ($items > 0) {
-					$db->commit();
+					$db->commitDataPoints();
 				}
 				$items = 0;
 			}

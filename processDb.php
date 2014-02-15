@@ -8,6 +8,7 @@ ini_set('max_execution_time', 5*60);
 $start = microtime(true);
 
 $db = new DB();
+$dbWrite = new DB();
 
 LHD::initMonitor($db->getNbDataPoints());
 
@@ -16,6 +17,7 @@ $q = $db->getAllDataPoints();
 $i			= 0;
 $lastdate	= null;
 $last		= null;
+$items		= 0;
 $summary	= new Summary();
 
 while ($r = $q->fetch(PDO::FETCH_OBJ)) {
@@ -38,8 +40,10 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 			$summary->day = $lastdate;
 			$summary->to = $last->timestampMs;
 			$nowMoving = !$summary->moving;
-			var_dump($summary);
-			// TODO: save summary here
+
+			// Save summary
+			$dbWrite->addSummary($summary);
+			$items++;
 
 			// Begin new event
 			$summary = new Summary();
@@ -58,11 +62,19 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 
 	$i++;
 
+	// Buffered writes
 	if ($i%1000 == 0) {
 		LHD::updateMonitor($i);
+		if ($items > 0) {
+			$dbWrite->commitSummaries();
+		}
+		$items = 0;
 	}
-
-	if ($i > 50000) break;
+}
+// last commit
+LHD::updateMonitor($i);
+if ($items > 0) {
+	$dbWrite->commitSummaries();
 }
 
 $end = microtime(true) - $start;
