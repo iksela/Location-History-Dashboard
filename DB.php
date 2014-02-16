@@ -95,4 +95,16 @@ class DB {
 		$r = $q->execute();
 		return $q;
 	}
+
+	public function getLastDate() {
+		$q = $this->connection->prepare("SELECT day FROM lhd_summary ORDER BY day DESC LIMIT 0,1");
+		$r = $q->execute();
+		return $q->fetch()[0];
+	}
+
+	public function getSummaryByDay($day) {
+		$q = $this->connection->prepare("SELECT * FROM lhd_summary WHERE day=? ORDER BY dp_from ASC");
+		$r = $q->execute(array($day));
+		return $q->fetchAll(PDO::FETCH_OBJ);
+	}
 }

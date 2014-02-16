@@ -8,6 +8,7 @@ $layout->header();
 $layout->nav('upload.php');
 ?>
 <div class="container">
+	<script src="js/bootstrap.file-input.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$('input[type=file]').bootstrapFileInput();

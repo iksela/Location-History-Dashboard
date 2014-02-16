@@ -29,9 +29,11 @@ class Layout {
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 
-	<link rel="stylesheet" href="css.css">
+	<link rel="stylesheet" href="css/css.css">
 
-	<script src="//gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js"></script>
+	<link rel="stylesheet" href="css/datepicker3.css">
+
+	<script src="js/bootstrap-datepicker.js"></script>
 </head>
 EOT;
 	}
