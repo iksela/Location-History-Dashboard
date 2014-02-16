@@ -89,4 +89,10 @@ class DB {
 		$r = $q->execute();
 		return $q->fetch()[0];
 	}
+
+	public function getMonthlyDistance() {
+		$q = $this->connection->prepare("SELECT DATE_FORMAT(day, '%Y-%m') as month, SUM(distance)/1000 as distance FROM lhd_summary GROUP BY 1");
+		$r = $q->execute();
+		return $q;
+	}
 }
