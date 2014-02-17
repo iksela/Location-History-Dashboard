@@ -102,6 +102,12 @@ class DB {
 		return $q;
 	}
 
+	public function getDailyDistance() {
+		$q = $this->connection->prepare("SELECT day, SUM(distance)/1000 as distance FROM lhd_summary GROUP BY 1");
+		$r = $q->execute();
+		return $q;
+	}
+
 	public function getLastDate() {
 		$q = $this->connection->prepare("SELECT day FROM lhd_summary ORDER BY day DESC LIMIT 0,1");
 		$r = $q->execute();
