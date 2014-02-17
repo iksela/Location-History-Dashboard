@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `lhd_summary` (
   `moving` tinyint(1) NOT NULL,
   `dp_from` bigint(20) NOT NULL,
   `dp_to` bigint(20) NOT NULL,
-  PRIMARY KEY (`day`)
+  PRIMARY KEY (`dp_from`,`dp_to`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
