@@ -33,7 +33,7 @@ class Distance {
 
 class Summary {
 	const MovingThreshold	= 0.5; // km
-	const TimeThreshold		= 300; // seconds
+	const TimeThreshold		= 120; // seconds
 
 	public $day			= null;
 	public $moving		= false;

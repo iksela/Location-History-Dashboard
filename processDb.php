@@ -14,6 +14,8 @@ LHD::initMonitor($db->getNbDataPoints());
 
 $q = $db->getAllDataPoints();
 
+$dbWrite->resetSummaries();
+
 $i			= 0;
 $lastdate	= null;
 $last		= null;
