@@ -119,4 +119,10 @@ class DB {
 		$r = $q->execute(array($day));
 		return $q->fetchAll(PDO::FETCH_OBJ);
 	}
+
+	public function getDataPointsByDay($day) {
+		$q = $this->connection->prepare("SELECT * FROM lhd_datapoints WHERE DATE_FORMAT(pointdate, '%Y-%m-%d')=? ORDER BY timestampMs ASC");
+		$r = $q->execute(array($day));
+		return $q->fetchAll(PDO::FETCH_OBJ);
+	}
 }

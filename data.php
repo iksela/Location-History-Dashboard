@@ -8,11 +8,9 @@ if ($_POST['day']) {
 	$data = array();
 	$summary = $db->getSummaryByDay($_POST['day']);
 
-	$html = '';
+	$html = '<div class="well well-sm">';
 
 	foreach ($summary as $event) {
-		$html .= '<div class="well well-sm">';
-
 		$from = new DateTime();
 		$from->setTimestamp($event->dp_from/1000);
 		$to = new DateTime();
@@ -30,15 +28,13 @@ if ($_POST['day']) {
 			$html .= "Idle.";
 		}
 
-		$html .= '</div>';
-/*		$data[] = array(
-			'from'	=> $from->format("Y-m-d H:i"),
-			'to'	=> $to->format("Y-m-d H:i"),
-			'interval'	=> $interval->format("%H:%I"),
-			'moving'	=> $event->moving,
-			'distance'	=> round($event->distance/1000)
-		);*/
+		$html .= '<br/>';
 	}
+	$html .= '</div>';
+
 	
-	echo $html;
+	$obj = new stdClass();
+	$obj->html = $html;
+	$obj->points = $db->getDataPointsByDay($_POST['day']);
+	echo json_encode($obj);
 }
