@@ -51,7 +51,11 @@ $lastdate = $db->getLastDate();
 						$('#h3-title').html('Showing data for '+e.format());
 						$('#data').html(data.html);
 						console.log(data.points);
-						new google.maps.Marker({position: new google.maps.LatLng(-25.363882,131.044922), map: map, icon: circle});
+						$.each(data.points, function(i){
+							var point = data.points[i];
+							console.log(point);
+							new google.maps.Marker({position: new google.maps.LatLng(point.lat,point.lng), map: map, icon: circle});
+						});
 					}
 				});
 			});

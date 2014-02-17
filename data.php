@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'DB.php';
+include 'Distance.php';
 
 $db = new DB();
 
@@ -32,9 +33,18 @@ if ($_POST['day']) {
 	}
 	$html .= '</div>';
 
+	$data = array();
+	$points = $db->getDataPointsByDay($_POST['day']);
+	foreach ($points as $point) {
+		$data[] = array(
+			"lat" => $point->latitude/Distance::E7,
+			"lng" => $point->longitude/Distance::E7
+		);
+	}
+
 	
 	$obj = new stdClass();
 	$obj->html = $html;
-	$obj->points = $db->getDataPointsByDay($_POST['day']);
+	$obj->points = $data;
 	echo json_encode($obj);
 }
