@@ -26,10 +26,12 @@ $lastdate = $db->getLastDate();
 			strokeWeight: 1
 		};
 
+		var bounds = new google.maps.LatLngBounds();
+
 		function initialize() {
-			var myLatlng = new google.maps.LatLng(-25.363882,131.044922);
+			var myLatlng = new google.maps.LatLng(48.858859,2.34706);
 			var mapOptions = {
-				zoom: 4,
+				zoom: 10,
 				center: myLatlng
 			}
 			map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
@@ -42,6 +44,9 @@ $lastdate = $db->getLastDate();
 				format: "yyyy-mm-dd",
 				endDate: "<?=$lastdate;?>"
 			}).on('changeDate', function(e) {
+				for (var i = 0; i < markers.length; i++) {
+					markers[i].setMap(null);
+				}
 				$.ajax({
 					url :	'data.php',
 					type:	'POST',
@@ -54,8 +59,11 @@ $lastdate = $db->getLastDate();
 						$.each(data.points, function(i){
 							var point = data.points[i];
 							console.log(point);
-							new google.maps.Marker({position: new google.maps.LatLng(point.lat,point.lng), map: map, icon: circle});
+							var marker = new google.maps.Marker({position: new google.maps.LatLng(point.lat,point.lng), map: map, icon: circle});
+							markers.push(marker);
+							bounds.extend(marker.position);
 						});
+						map.fitBounds(bounds);
 					}
 				});
 			});
