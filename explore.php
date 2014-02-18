@@ -16,6 +16,7 @@ $lastdate = $db->getLastDate();
 	<script type="text/javascript">
 		var map;
 		var heatmap;
+		var flightPath;
 		var markers = [];
 
 		var circle ={
@@ -48,6 +49,7 @@ $lastdate = $db->getLastDate();
 				for (var i = 0; i < markers.length; i++) {
 					markers[i].setMap(null);
 				}
+				if (flightPath) flightPath.setMap(null);
 				$.ajax({
 					url :	'data.php',
 					type:	'POST',
@@ -65,6 +67,16 @@ $lastdate = $db->getLastDate();
 							markers.push(marker);
 							bounds.extend(marker.position);
 						});
+
+						flightPath = new google.maps.Polyline({
+							path: points,
+							geodesic: true,
+							strokeColor: '#FF0000',
+							strokeOpacity: 1.0,
+							strokeWeight: 2
+						});
+
+						flightPath.setMap(map);
 
 						heatmap = new google.maps.visualization.HeatmapLayer({
 							data: new google.maps.MVCArray(points)
