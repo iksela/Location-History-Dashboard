@@ -12,9 +12,10 @@ $db = new DB();
 $lastdate = $db->getLastDate();
 ?>
 <div class="container">
-	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"></script>
 	<script type="text/javascript">
 		var map;
+		var heatmap;
 		var markers = [];
 
 		var circle ={
@@ -55,14 +56,22 @@ $lastdate = $db->getLastDate();
 					success:	function(data) {
 						$('#h3-title').html('Showing data for '+e.format());
 						$('#data').html(data.html);
-						console.log(data.points);
+						var points = [];
 						$.each(data.points, function(i){
 							var point = data.points[i];
-							console.log(point);
-							var marker = new google.maps.Marker({position: new google.maps.LatLng(point.lat,point.lng), map: map, icon: circle});
+							var currentLatLng = new google.maps.LatLng(point.lat,point.lng);
+							points.push(currentLatLng);
+							var marker = new google.maps.Marker({position: currentLatLng, map: map, icon: circle});
 							markers.push(marker);
 							bounds.extend(marker.position);
 						});
+
+						heatmap = new google.maps.visualization.HeatmapLayer({
+							data: new google.maps.MVCArray(points)
+						});
+
+						heatmap.setMap(map);
+
 						map.fitBounds(bounds);
 					}
 				});
