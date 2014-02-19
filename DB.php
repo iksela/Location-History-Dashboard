@@ -65,6 +65,12 @@ class DB {
 		$this->placeholders = array();
 	}
 
+	public function resetDataPoints() {
+		$sql = "TRUNCATE lhd_datapoints";
+		$query = $this->connection->prepare($sql);
+		$query->execute();
+	}
+
 	public function resetSummaries() {
 		$sql = "TRUNCATE lhd_summary";
 		$query = $this->connection->prepare($sql);

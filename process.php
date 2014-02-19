@@ -15,6 +15,7 @@ if ($_FILES['lh']['name'] != '') {
 	$items = 0;
 	$lines_processed = 0;
 	$db = new DB();
+	$db->resetDataPoints();
 	if ($handle) {
 		while (($line = fgets($handle)) !== false) {
 			if (strpos($line, 'locations') !== false && !$started) {
