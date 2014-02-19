@@ -65,7 +65,22 @@ $lastdate = $db->getLastDate();
 							var currentLatLng = new google.maps.LatLng(point.lat,point.lng);
 							points.push(currentLatLng);
 							hmPoints.push({location: currentLatLng, weight: point.cnt});
-							var marker = new google.maps.Marker({position: currentLatLng, map: map, icon: circle});
+							var marker = new google.maps.Marker({position: currentLatLng, map: map, icon: circle, accuracy: point.acc});
+							google.maps.event.addListener(marker, 'click', function() {
+								var tmp = new google.maps.Circle({
+									center: currentLatLng,
+									radius: parseInt(point.acc),
+									map: map,
+									fillColor: '#0000FF',
+									fillOpacity: 0.5,
+									strokeColor: '#0000FF',
+									strokeOpacity: 1.0
+								});
+								setTimeout(function(){
+									tmp.setMap(null);
+									tmp = null;
+								},1000);
+							});
 							markers.push(marker);
 							bounds.extend(marker.position);
 						});
