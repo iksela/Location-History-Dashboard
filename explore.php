@@ -56,13 +56,15 @@ $lastdate = $db->getLastDate();
 					dataType: "json",
 					data:	{day: e.format()},
 					success:	function(data) {
-						$('#h3-title').html('Showing data for '+e.format());
+						$('#h3-title').html('Showing data for '+e.format()+' : '+Math.round(data.distance/1000)+' km');
 						$('#data').html(data.html);
 						var points = [];
+						var hmPoints = [];
 						$.each(data.points, function(i){
 							var point = data.points[i];
 							var currentLatLng = new google.maps.LatLng(point.lat,point.lng);
 							points.push(currentLatLng);
+							hmPoints.push({location: currentLatLng, weight: point.cnt});
 							var marker = new google.maps.Marker({position: currentLatLng, map: map, icon: circle});
 							markers.push(marker);
 							bounds.extend(marker.position);
@@ -79,7 +81,7 @@ $lastdate = $db->getLastDate();
 						flightPath.setMap(map);
 
 						heatmap = new google.maps.visualization.HeatmapLayer({
-							data: new google.maps.MVCArray(points)
+							data: new google.maps.MVCArray(hmPoints)
 						});
 
 						heatmap.setMap(map);
@@ -97,8 +99,8 @@ $lastdate = $db->getLastDate();
 		</div>
 		<div class="col-md-7">
 			<h3 id='h3-title'>No data loaded.</h3>
+			<div id="map-canvas" style="height:500px; width:800px;"></div>
 			<div id="data"></div>
-			<div id="map-canvas" style="height:500px;"></div>
 		</div>
 	</div>
 </div>
