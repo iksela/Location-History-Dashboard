@@ -33,6 +33,9 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 		$summary->from = $r->timestampMs;
 	}
 
+	//var_dump($r->pointdate);
+	if ($summary->ref['latitude'] == 0) $summary->ref = array('latitude' => $r->latitude, 'longitude' => $r->longitude, 'accuracy' => $r->accuracy, 'lastMotion' => 0);
+
 	// we need a reference point
 	if ($last) {
 		// try adding the distance and retrieve a changed state
@@ -44,6 +47,7 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 			$nowMoving = !$summary->moving;
 
 			// Save summary
+			//var_dump($summary);
 			$dbWrite->addSummary($summary);
 			$items++;
 
@@ -51,6 +55,9 @@ while ($r = $q->fetch(PDO::FETCH_OBJ)) {
 			$summary = new Summary();
 			$summary->from = $last->timestampMs;
 			$summary->moving = $nowMoving;
+			
+			$summary->ref = array('latitude' => $r->latitude, 'longitude' => $r->longitude, 'accuracy' => $r->accuracy, 'lastMotion' => 0);
+			//$summary->nbPoints = 1;
 			// if switched from static to moving, set initial distance
 			if ($nowMoving == true) {
 				$summary->setDistance($last, $r);
