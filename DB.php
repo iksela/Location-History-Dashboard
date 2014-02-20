@@ -133,7 +133,7 @@ class DB {
 	}
 
 	public function getSummarizedDataPointsByDay($day) {
-		$sql  = "SELECT distance, moving, dp_from, dp_to, latitude, longitude, accuracy, pointdate FROM lhd_summary s, lhd_datapoints d WHERE day = ? AND timestampMs >= dp_from AND timestampMs <= dp_to";
+		$sql  = "SELECT distance, moving, dp_from, dp_to, latitude, longitude, accuracy, pointdate, timestampMs FROM lhd_summary s, lhd_datapoints d WHERE day = ? AND timestampMs >= dp_from AND timestampMs <= dp_to";
 		$q = $this->connection->prepare($sql);
 		$r = $q->execute(array($day));
 		return $q->fetchAll(PDO::FETCH_OBJ);

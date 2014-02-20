@@ -43,10 +43,11 @@ if ($_POST['day']) {
 		foreach ($points as $point) {
 			if ($point->dp_from >= $event->dp_from && $point->dp_to <= $event->dp_to) {
 				$thisPoint = array(
-					"lat" => $point->latitude/Distance::E7,
-					"lng" => $point->longitude/Distance::E7,
-					"acc" => $point->accuracy,
-					"cnt" => 1
+					"lat"	=> $point->latitude/Distance::E7,
+					"lng"	=> $point->longitude/Distance::E7,
+					"acc"	=> $point->accuracy,
+					"cnt"	=> 1,
+					"ts"	=> $point->timestampMs
 				);
 				if ($event->moving) {
 					$data[] = $thisPoint;
@@ -61,10 +62,11 @@ if ($_POST['day']) {
 		}
 		if ($aggregated["cnt"] > 0) {
 			$data[] = array(
-				"lat" => $aggregated["lat"]/$aggregated["cnt"],
-				"lng" => $aggregated["lng"]/$aggregated["cnt"],
-				"acc" => $aggregated["acc"]/$aggregated["cnt"],
-				"cnt" => $aggregated["cnt"]/count($points)*100
+				"lat"	=> $aggregated["lat"]/$aggregated["cnt"],
+				"lng"	=> $aggregated["lng"]/$aggregated["cnt"],
+				"acc"	=> $aggregated["acc"]/$aggregated["cnt"],
+				"cnt"	=> $aggregated["cnt"]/count($points)*100,
+				"ts"	=> $point->timestampMs
 			);
 		}
 	}

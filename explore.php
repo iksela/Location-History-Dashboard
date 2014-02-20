@@ -12,7 +12,7 @@ $db = new DB();
 $lastdate = $db->getLastDate();
 ?>
 <div class="container">
-	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization,geometry"></script>
 	<script type="text/javascript">
 		var map;
 		var heatmap;
@@ -65,7 +65,13 @@ $lastdate = $db->getLastDate();
 							var currentLatLng = new google.maps.LatLng(point.lat,point.lng);
 							points.push(currentLatLng);
 							hmPoints.push({location: currentLatLng, weight: point.cnt});
-							var marker = new google.maps.Marker({position: currentLatLng, map: map, icon: circle, accuracy: point.acc});
+							var msg = '';
+							if (i > 0) {
+								var interval = (point.ts - data.points[i-1].ts)/1000;
+								var dist = google.maps.geometry.spherical.computeDistanceBetween(currentLatLng,points[i-1])/1000;
+								msg = Math.round(Math.abs(dist/(interval/3600)))+" km/h";
+							}
+							var marker = new google.maps.Marker({position: currentLatLng, map: map, icon: circle, accuracy: point.acc, title: msg});
 							google.maps.event.addListener(marker, 'click', function() {
 								var tmp = new google.maps.Circle({
 									center: currentLatLng,
